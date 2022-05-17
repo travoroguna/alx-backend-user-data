@@ -2,7 +2,7 @@
 """ Autheication module
 """
 
-from typing import List, TypeVar
+from typing import List, Optional, TypeVar
 
 from flask import request
 
@@ -12,6 +12,18 @@ class Auth:
     authorization class
     """
 
+    def norm_path(self, path: str) -> Optional[str]:
+        """
+        Normalize the path
+        """
+        if path is None:
+            return None
+
+        if not path.endswith("/"):
+            path += "/"
+
+        return path
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Check if the request is authenticated or not
@@ -19,12 +31,9 @@ class Auth:
         if path is None or excluded_paths in [None, []]:
             return True
 
-        if not path.endswith("/"):
-            path += "/"
+        path = self.norm_path(path)
 
-        if path not in [
-            (lambda x: x if x.endswith("/") else f"{x}/")(x) for x in excluded_paths
-        ]:
+        if path not in [self.norm_path(x) for x in excluded_paths]:
             return True
 
         return False
