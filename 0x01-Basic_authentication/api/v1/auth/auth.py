@@ -8,6 +8,10 @@ from flask import request
 
 
 class Auth:
+    """
+    authorization class
+    """
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Check if the request is authenticated or not
