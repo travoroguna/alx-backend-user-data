@@ -16,6 +16,17 @@ class Auth:
         """
         Check if the request is authenticated or not
         """
+        if path is None or excluded_paths in [None, []]:
+            return True
+
+        if not path.endswith("/"):
+            path += "/"
+
+        if path not in [
+            (lambda x: x if x.endswith("/") else f"{x}/")(x) for x in excluded_paths
+        ]:
+            return True
+
         return False
 
     def authorization_header(self, request=None) -> str:
